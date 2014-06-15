@@ -43,7 +43,7 @@ for(i in 1:length(mean_interval)){
         temp1 <- c(temp1, mean_interval[[i]])        
 }
 unique_interval <- unique(zz$interval)
-plot(unique_interval,mean_interval, type ="l")
+plot(unique_interval,mean_interval, type ="l", main ="Daily Activity Pattern", xlab = "5-minute interval", ylab = "average number of steps")
 ```
 
 ### Max. No. of Steps:
@@ -58,10 +58,46 @@ index <- which(max(temp2) == temp2)
 unique_interval[index]
 ```
 
-
-
 ## Imputing missing values
 
+### Total Number of missing values
+```{r, echo =TRUE}
+dim(zz)[1] - dim(zz[complete.cases(zz),])[1]
+```
+### i am planning to fill in all the of the missing values with the rounding value of the mean for that 5-minute interval
 
+### New Dataset With The Missing Data In
+```{r,echo=TRUE}
+only_interval <- zz$interval
+new_zz <- zz
+for(i in 1 : length(only_interval)){
+    if(is.na(zz[i,1]))
+        new_zz[i,1] <- round(mean_interval[[as.character(only_interval[i])]])
+}
+```
+### Histogram by New Dataset
+```{r,echo=TRUE}
+new_date <- split(new_zz$steps,new_zz$date)
+
+new_sum_date <- lapply(new_date, sum, na.rm =TRUE)
+new_temp <- c()
+
+for(i in 1:length(new_sum_date)){
+        new_temp <- c(new_temp, new_sum_date[[i]])        
+}
+
+hist(new_temp, xlab = "Total Number of Steps Taken Per Day", main ="Histogram of The Total Number of Steps Taken Each Day", ylab ="Number of days")
+```
+### Mean by New Dataset
+```{r,echo=TRUE}
+mean(new_temp, na.rm =T)
+```
+### Median by New Dataset
+```{r,echo=TRUE}
+median(new_temp, na.rm =T)
+```
+### Yes. It differs. the mean and the medin increases as i impute missing data. the number of days also increases for mean value also in respect to the previous result.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+
