@@ -99,5 +99,18 @@ median(new_temp, na.rm =T)
 ### Yes. It differs. the mean and the medin increases as i impute missing data. the number of days also increases for mean value also in respect to the previous result.
 
 ## Are there differences in activity patterns between weekdays and weekends?
-
-
+### Creating New variable in the DataSets named 'catWeek'
+```{r,echo=TRUE}
+new_zz["catWeek"] <- NA
+#install.packages("timeDate")
+library(timeDate)
+new_zz$catWeek <- sapply(new_zz$date,FUN=function(x) { if ( isWeekday(x) ) {as.factor("Weekday") } else {as.factor("Weekend")}})
+```
+### Plot
+```{r,echo=TRUE}
+library(plyr)
+mean.steps <- ddply(new_zz, .(interval, catWeek), summarize, steps = mean(steps))
+library(lattice)
+xyplot(steps ~ interval | catWeek, data = mean.steps, layout = c(1, 2), type = "l", 
+       xlab = "5-minute Interval", ylab = "Number of Steps", main = "Activity Patterns between Weekends and Weekdays")
+```
